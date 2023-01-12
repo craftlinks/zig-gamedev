@@ -54,6 +54,7 @@ pub fn build(b: *std.build.Builder) void {
     installDemo(b, layers_wgpu.build(b, options), "layers_wgpu");
     installDemo(b, gamepad_wgpu.build(b, options), "gamepad_wgpu");
     installDemo(b, physics_test_wgpu.build(b, options), "physics_test_wgpu");
+    installDemo(b, opengl_window.build(b, options), "opengl_window");
 
     if (@import("builtin").target.os.tag == .windows) {
         installDemo(b, minimal.build(b, options), "minimal");
@@ -165,6 +166,7 @@ const bindless = @import("samples/bindless/build.zig");
 const simple_raytracer = @import("samples/simple_raytracer/build.zig");
 const intro = @import("samples/intro/build.zig");
 const audio_playback_test = @import("samples/audio_playback_test/build.zig");
+const opengl_window = @import("samples/opengl/build.zig");
 
 pub const Options = struct {
     build_mode: std.builtin.Mode,

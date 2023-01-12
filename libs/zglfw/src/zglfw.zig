@@ -80,6 +80,8 @@ pub fn maybeError() Error!void {
         else => Error.Unknown,
     };
 }
+
+
 extern fn glfwGetError(description: ?*?[*:0]const u8) i32;
 
 pub const InputMode = enum(i32) {
@@ -89,6 +91,40 @@ pub const InputMode = enum(i32) {
     lock_key_mods = 0x00033004,
     raw_mouse_motion = 0x00033005,
 };
+
+//--------------------------------------------------------------------------------------------------
+//
+// OpenGL
+//
+//--------------------------------------------------------------------------------------------------
+
+fn FnPtr(comptime Fn: type) type {
+    return if (@import("builtin").zig_backend != .stage1)
+        *const Fn
+    else
+        Fn;
+}
+
+pub const FunctionPointer: type = blk: {
+    const BaseFunc = fn (u32) callconv(.C) u32;
+    const SpecializedFnPtr = FnPtr(BaseFunc);
+    const fnptr_type = @typeInfo(SpecializedFnPtr);
+    var generic_type = fnptr_type;
+    std.debug.assert(generic_type.Pointer.size == .One);
+    generic_type.Pointer.child = anyopaque;
+    break :blk @Type(generic_type);
+};
+
+pub extern fn glfwWindowHint(target: i32, hint: i32) void;
+pub extern fn glfwMakeContextCurrent(window: *Window) void;
+pub extern fn glfwGetProcAddress(procname: [*:0]const u8) *FunctionPointer;
+
+pub const GLFW_CONTEXT_VERSION_MAJOR = 0x00022002;
+pub const GLFW_CONTEXT_VERSION_MINOR = 0x00022003;
+pub const GLFW_OPENGL_PROFILE = 0x00022008;
+pub const GLFW_OPENGL_CORE_PROFILE = 0x00032001;
+
+
 //--------------------------------------------------------------------------------------------------
 //
 // Keyboard/Mouse

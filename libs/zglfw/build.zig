@@ -20,6 +20,7 @@ pub const pkg = std.build.Pkg{
 };
 
 pub fn link(exe: *std.build.LibExeObjStep) void {
+    exe.addIncludePath(thisDir() ++ "/../zgl/windows/libs/include");
     exe.addIncludePath(thisDir() ++ "/libs/glfw/include");
     exe.linkSystemLibraryName("c");
 
@@ -32,6 +33,8 @@ pub fn link(exe: *std.build.LibExeObjStep) void {
             exe.linkSystemLibraryName("gdi32");
             exe.linkSystemLibraryName("user32");
             exe.linkSystemLibraryName("shell32");
+            exe.linkSystemLibraryName("opengl32");
+
             exe.addCSourceFiles(&.{
                 src_dir ++ "monitor.c",
                 src_dir ++ "init.c",
@@ -48,6 +51,9 @@ pub fn link(exe: *std.build.LibExeObjStep) void {
                 src_dir ++ "win32_time.c",
                 src_dir ++ "win32_joystick.c",
                 src_dir ++ "win32_window.c",
+                thisDir() ++ "/../zgl/windows/libs/src/glad.c",
+                
+
             }, &.{"-D_GLFW_WIN32"});
         },
         .macos => {
